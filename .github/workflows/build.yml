@@ -39,6 +39,22 @@ jobs:
         with:
           gradle-version: '8.9'
 
+      - name: Check Android Manifest
+        run: |
+          python3 - <<'PY'
+          import os
+          import xml.etree.ElementTree as ET
+          p = os.path.join(os.environ["PROJECT_DIR"], "app/src/main/AndroidManifest.xml")
+          print("Checking:", p)
+          try:
+              ET.parse(p)
+              print("Manifest XML is valid.")
+          except Exception as e:
+              print("MANIFEST ERROR:", e)
+              print(open(p).read())
+              raise
+          PY
+          
       - name: Build APK
         run: gradle -p "$PROJECT_DIR" assembleDebug
 
