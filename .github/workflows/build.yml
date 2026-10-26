@@ -38,22 +38,20 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.9'
-
-      - name: Check Android Manifest
+  
+      - name: Fix Android Manifest
         run: |
           python3 - <<'PY'
           import os
-          import xml.etree.ElementTree as ET
           p = os.path.join(os.environ["PROJECT_DIR"], "app/src/main/AndroidManifest.xml")
-          print("Checking:", p)
-          try:
-              ET.parse(p)
-              print("Manifest XML is valid.")
-          except Exception as e:
-              print("MANIFEST ERROR:", e)
-              print(open(p).read())
-              raise
+          with open(p, "r", encoding="utf-8-sig") as f:
+              s = f.read()
+          s = s.lstrip()
+          with open(p, "w", encoding="utf-8") as f:
+              f.write(s)
+          print("Removed leading whitespace from manifest.")
           PY
+
           
       - name: Build APK
         run: gradle -p "$PROJECT_DIR" assembleDebug
