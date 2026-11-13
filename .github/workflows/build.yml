@@ -1,5 +1,5 @@
 
-name: Build Lazzy Manager V2
+name: Build LazzyManager V2
 
 on:
   workflow_dispatch:
